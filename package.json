@@ -1,0 +1,23 @@
+{
+  "name": "sigaa_nodejs",
+  "type": "module",
+  "version": "1.0.0",
+  "scripts": {
+    "start": "node src/index.js"
+  },
+  "license": "MIT",
+  "devDependencies": {
+    "prettier": "^2.8.1"
+  },
+  "dependencies": {
+    "@keyv/mongo": "^2.1.8",
+    "axios": "^1.2.1",
+    "chalk": "^5.2.0",
+    "cheerio": "^1.0.0-rc.12",
+    "deep-equal": "^2.1.0",
+    "dotenv": "^16.0.3",
+    "form-data": "^4.0.0",
+    "keyv": "^4.5.2",
+    "nodemailer": "^6.8.0"
+  }
+}
