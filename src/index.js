@@ -3,8 +3,12 @@ import FormData from "form-data";
 import { load } from "cheerio";
 import chalk from "chalk";
 import equal from "deep-equal";
-import { keyv, sendEmail } from "./config.js";
+import { config } from "dotenv";
 
+import { sendWebhook } from "./webhook.js";
+import { cache } from "./cache.js";
+
+config();
 const BASE_URL = "https://sig.cefetmg.br/sigaa/";
 
 const getJsessionId = async (http) => {
@@ -114,11 +118,11 @@ const getGrades = async (http, courses) => {
       gradesMap[labels[i]] = points[i];
     }
 
-    const previousGrades = await keyv.get(course.name);
-    if (!equal(previousGrades, gradesMap) && previousGrades) {
+    const previousGrades = await cache.get(course.name);
+    if (!equal(previousGrades, gradesMap)) {
       console.log(chalk.green("New grades for "), course.name);
-      await keyv.set(course.name, gradesMap);
-      await sendEmail(course.name);
+      await cache.set(course.name, gradesMap);
+      await sendWebhook(course.name, gradesMap);
     } else {
       console.log(chalk.red("No new grades for "), course.name);
     }
@@ -149,5 +153,5 @@ const run = async () => {
 await run();
 
 setInterval(async () => {
-    await run();
-}, 1000 * 60 * 3);
+  await run();
+}, 1000 * 60 * 5);

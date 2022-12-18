@@ -2,6 +2,8 @@
   "name": "sigaa_nodejs",
   "type": "module",
   "version": "1.0.0",
+  "author": "Guilherme Augusto de Oliveira",
+  "description": "Serviço de webscraping para recolher notas disponibilizadas no SIGAA",
   "scripts": {
     "start": "node src/index.js"
   },
@@ -10,14 +12,13 @@
     "prettier": "^2.8.1"
   },
   "dependencies": {
-    "@keyv/mongo": "^2.1.8",
     "axios": "^1.2.1",
     "chalk": "^5.2.0",
     "cheerio": "^1.0.0-rc.12",
     "deep-equal": "^2.1.0",
+    "discord-api-types": "^0.37.23",
     "dotenv": "^16.0.3",
-    "form-data": "^4.0.0",
-    "keyv": "^4.5.2",
-    "nodemailer": "^6.8.0"
+    "file-system-cache": "^2.0.1",
+    "form-data": "^4.0.0"
   }
 }
