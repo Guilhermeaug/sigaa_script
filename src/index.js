@@ -96,7 +96,7 @@ const getGrades = async (http, courses) => {
     const $$ = load(responseGradesPage.data);
     if (!$$(".tabelaRelatorio").html()) {
       console.log(chalk.red("Não há notas disponíveis"));
-      return;
+      continue;
     }
     const p = $$(".tabelaRelatorio tbody tr td")
       .map((i, el) => {
