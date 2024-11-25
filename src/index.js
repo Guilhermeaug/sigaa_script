@@ -7,6 +7,7 @@ import { config } from "dotenv";
 
 import { sendWebhook } from "./webhook.js";
 import { cache } from "./cache.js";
+import fs from "fs";
 
 config();
 const BASE_URL = "https://sig.cefetmg.br/sigaa/";
@@ -79,16 +80,16 @@ const getGrades = async (http, courses) => {
     const form2 = new FormData();
     form2.append("formMenu", "formMenu");
     form2.append(
-      "formMenu:j_id_jsp_311393315_65",
-      "formMenu:j_id_jsp_311393315_88"
+      "formMenu:j_id_jsp_311393315_71",
+      "formMenu:j_id_jsp_311393315_94"
     );
     form2.append(
       "javax.faces.ViewState",
       $('input[name="javax.faces.ViewState"]').val()
     );
     form2.append(
-      "formMenu:j_id_jsp_311393315_93",
-      "formMenu:j_id_jsp_311393315_93"
+      "formMenu:j_id_jsp_311393315_99",
+      "formMenu:j_id_jsp_311393315_99"
     );
     const gradesUrl = `ava/index.jsf`;
     const responseGradesPage = await http.post(gradesUrl, form2);
