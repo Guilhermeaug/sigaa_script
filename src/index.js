@@ -1,22 +1,33 @@
 import axios from "axios";
-import FormData from "form-data";
-import { load } from "cheerio";
 import chalk from "chalk";
+import { load } from "cheerio";
 import equal from "deep-equal";
 import { config } from "dotenv";
-
-import { sendWebhook } from "./webhook.js";
+import FormData from "form-data";
 import { cache } from "./cache.js";
-import fs from "fs";
+import { sendWebhook } from "./webhook.js";
 
 config();
 const BASE_URL = "https://sig.cefetmg.br/sigaa/";
+
+const log = (...args) => {
+  const date = new Date();
+  const timestamp = date.toLocaleString('pt-BR', {
+    day: '2-digit',
+    month: '2-digit',
+    year: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit',
+    second: '2-digit'
+  });
+  console.log(`[${timestamp}]`, ...args);
+};
 
 const getJsessionId = async (http) => {
   const url = `verTelaLogin.do`;
   const response = await http.get(url);
   http.defaults.headers.cookie = response.headers["set-cookie"];
-  console.log(chalk.green("Got JSESSIONID"));
+  log(chalk.green("Got JSESSIONID"));
 };
 
 const login = async (http) => {
@@ -25,7 +36,7 @@ const login = async (http) => {
   form.append("user.login", process.env.USUARIO);
   form.append("user.senha", process.env.SENHA);
   await http.post(url, form);
-  console.log(chalk.green("Logged in"));
+  log(chalk.green("Logged in"));
 };
 
 const getClasses = async (http) => {
@@ -59,14 +70,14 @@ const getClasses = async (http) => {
       };
     });
 
-  console.log(chalk.green("Got classes"));
+  log(chalk.green("Got classes"));
 
   return courses;
 };
 
 const getGrades = async (http, courses) => {
   for (const course of courses) {
-    console.log(chalk.blue("Looking for "), course.name);
+    log(chalk.blue("Looking for "), course.name);
 
     const courseUrl = `portais/discente/discente.jsf`;
     const form = new FormData();
@@ -96,7 +107,7 @@ const getGrades = async (http, courses) => {
 
     const $$ = load(responseGradesPage.data);
     if (!$$(".tabelaRelatorio").html()) {
-      console.log(chalk.red("Não há notas disponíveis"));
+      log(chalk.red("Não há notas disponíveis"));
       continue;
     }
     const p = $$(".tabelaRelatorio tbody tr td")
@@ -121,18 +132,18 @@ const getGrades = async (http, courses) => {
 
     const previousGrades = await cache.get(course.name);
     if (!equal(previousGrades, gradesMap)) {
-      console.log(chalk.green("New grades for "), course.name);
+      log(chalk.green("New grades for "), course.name);
       await cache.set(course.name, gradesMap);
       await sendWebhook(course.name, gradesMap);
     } else {
-      console.log(chalk.red("No new grades for "), course.name);
+      log(chalk.red("No new grades for "), course.name);
     }
   }
 
-  console.log(chalk.green("Finished executing"));
+  log(chalk.green("Finished executing"));
 };
 
-console.log("Starting Service");
+log("Starting Service");
 const run = async () => {
   const http = axios.create({
     baseURL: BASE_URL,
