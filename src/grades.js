@@ -121,7 +121,7 @@ export const getGrades = async (scraper, courses) => {
   };
 
   const data = [];
-  for await (const course of courses.slice(0, 1)) {
+  for await (const course of courses) {
     const assessments = await getCourseData(course);
     data.push({
       course: course.name,

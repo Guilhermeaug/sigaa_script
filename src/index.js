@@ -29,3 +29,5 @@ const run = async () => {
   logger.info("Service finished");
 };
 await run();
+
+setInterval(run, 1000 * 60 * 10);
