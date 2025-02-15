@@ -15,6 +15,7 @@
     "axios": "^1.2.1",
     "chalk": "^5.2.0",
     "cheerio": "^1.0.0-rc.12",
+    "dayjs": "^1.11.13",
     "deep-equal": "^2.1.0",
     "discord-api-types": "^0.37.23",
     "dotenv": "^16.0.3",

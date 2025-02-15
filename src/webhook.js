@@ -1,27 +1,32 @@
-import chalk from "chalk";
 import axios from "axios";
+import { logger, dayjs } from "./utils.js";
 
-const createEmbed = (courseName, grades) => {
+const createEmbed = (courseName, assessments) => {
   const embed = {
     title: courseName,
     color: 48028,
-    timestamp: new Date().toISOString(),
+    timestamp: dayjs().toISOString(),
     thumbnail: {
       url: "https://1.bp.blogspot.com/-Z6P0kRFzZj0/YMtmsPxs93I/AAAAAAACvro/y1lPCxCPljwognc1IP3GQFOVfhdbxXi8wCLcBGAsYHQ/s600/cefet-mg-indagacao.png",
     },
-    image: {
-      url: "https://glitchii.github.io/embedbuilder/assets/media/banner.png",
-    },
     fields: [],
   };
-  for (const [key, value] of Object.entries(grades)) {
-    embed.fields.push({ name: key, value: `> ${value}`, inline: false });
+
+  for (const { name, abbreviation, maxScore, score } of assessments) {
+    const percentage = ((score / maxScore) * 100).toFixed(2);
+    const value = `${score.toFixed(2)}/${maxScore.toFixed(2)} (${percentage}%)`;
+    embed.fields.push({
+      name: `${abbreviation} - ${name}`,
+      value,
+      inline: true,
+    });
   }
+
   return embed;
 };
 
-export const sendWebhook = async (name, grades) => {
-  const embed = createEmbed(name, grades);
+export const sendWebhook = async (name, assessments) => {
+  const embed = createEmbed(name, assessments);
 
   try {
     await axios.post(
@@ -31,7 +36,6 @@ export const sendWebhook = async (name, grades) => {
       }
     );
   } catch (e) {
-    console.log(chalk.red("Error sending webhook"));
-    console.error(e);
+    logger.error("Failed to send webhook", e);
   }
 };
